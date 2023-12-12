@@ -5,6 +5,7 @@ const useRefreshToken = (serverpath) => {
     const [err,setErr]=useState(false)
     const [data,setData]=useState(null)
     const [fake,setFake]=useState(null)
+    const [typeerr,setTypeerr]=useState(null)
 
     useEffect(()=>{
       const controller=new AbortController()
@@ -17,7 +18,7 @@ const useRefreshToken = (serverpath) => {
                 }
             )
           .then(res=>{
-            if (res!==20) {
+            if (res.status!==200) {
               setErr(true)
             }
             return res.json()
@@ -32,6 +33,16 @@ const useRefreshToken = (serverpath) => {
               setData(data)
             }
           })
+          .catch(err=>{
+            console.log("err exist ! ###SOLVE IT### !",err.name)
+            if (err.name==="TypeError") {
+              setTypeerr(`Type Error Exist ! ${Math.floor(Math.random()*1000)}`)
+            }
+            if (err.name==="AbortError") {
+              // Or omit error !
+              console.clear()
+            }
+          })
       
       return()=>{
         controller.abort()
@@ -39,7 +50,7 @@ const useRefreshToken = (serverpath) => {
 
     },[serverpath])
 
-  return {loading,err,fake,data}
+  return {loading,err,fake,typeerr,data}
 }
 
 export default useRefreshToken

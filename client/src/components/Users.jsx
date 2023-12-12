@@ -4,12 +4,20 @@ import useRefreshToken from "../hooks/useRefreshToken"
 
 const Users = () => {
   const location =useLocation()
-  const {loading,err,fake,data}=useRefreshToken(location.pathname)
+  const {loading,err,fake,typeerr,data}=useRefreshToken(location.pathname)
 
   if (fake) {
     return (
       <>
-        <Navigate to={"/login"}/>
+        <Navigate to={"/logout"}/>
+      </>
+    )
+  }
+
+  if (err) {
+    return(
+      <>
+        <Navigate to={"/home"}/>
       </>
     )
   }
@@ -17,6 +25,7 @@ const Users = () => {
   return (
     <div>
       <p>Users</p>
+      <p>{typeerr ? (typeerr):("")}</p>
       <hr />
         <p>{loading ? ("LOADING...."):("")}</p>
       <hr />

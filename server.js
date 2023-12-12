@@ -68,4 +68,19 @@ server.get("/users",isAuthJwt,async(req,res)=>{
     res.json({data:data})
 })
 
+server.get("/todos",isAuthJwt,async(req,res)=>{
+    const refreshtoken =jwt.sign(req.verify,process.env.REFRESH_TOKEN_SCRET,{expiresIn:"5h"})
+    res.cookie("refreshtoken",refreshtoken,{maxAge:1000*60*60*5,httpOnly:true,sameSite:"none",secure:"none"})
+    const todos =await axios.get("https://jsonplaceholder.typicode.com/todos")
+    const data=await todos.data
+    res.json({data:data})
+})
+
+server.get("/logout",(req,res)=>{
+    const refreshtoken =req.cookies.refreshtoken
+    res.cookie("refreshtoken","",{maxAge:0,httpOnly:true,sameSite:"none",secure:"none"})
+    res.json({data:"logOut"})
+})
+
+
 server.listen(3000,()=>console.log("--------------------------------------------"))
